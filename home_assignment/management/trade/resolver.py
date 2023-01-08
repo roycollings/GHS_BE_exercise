@@ -48,10 +48,13 @@ class Trade:
     price: Decimal
     placed_at: ArrowType
 
+@strawberry.input
+class BaseFilter:
+    base_symbol: str
 
-async def get_trades(info: GenieInfo) -> list[Trade]:
+async def get_trades(info: GenieInfo, filter: BaseFilter) -> list[Trade]:
     with info.context.session_factory.begin() as session:
-        trades = query_trades(session)
+        trades = query_trades(session, filter.base_symbol)
         return [Trade(
             base_id=trade.base_id,
             base=trade.base,
