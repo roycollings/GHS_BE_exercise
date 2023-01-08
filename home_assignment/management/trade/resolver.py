@@ -57,7 +57,12 @@ class PageFilter:
     number: int
     size: int
 
-async def get_trades(info: GenieInfo, filter: BaseFilter, page: PageFilter) -> list[Trade]:
+@strawberry.type
+class ReturnValue:
+    total_count: int
+    trades: list[Trade]
+
+async def get_trades(info: GenieInfo, filter: BaseFilter, page: PageFilter) -> ReturnValue:
     start = (page.number - 1) * page.size
     stop = start + page.size
 
@@ -65,7 +70,9 @@ async def get_trades(info: GenieInfo, filter: BaseFilter, page: PageFilter) -> l
         total_trades = query_trades(session, filter.base_symbol)
         trades_for_page = total_trades[start:stop]
 
-        return [Trade(
+        return ReturnValue(
+            total_count=len(total_trades),
+            trades=[Trade(
             base_id=trade.base_id,
             base=trade.base,
 
@@ -84,3 +91,4 @@ async def get_trades(info: GenieInfo, filter: BaseFilter, page: PageFilter) -> l
             price=trade.price,
             placed_at=trade.placed_at,
             ) for trade in trades_for_page]
+        )
