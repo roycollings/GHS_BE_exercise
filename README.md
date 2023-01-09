@@ -1,3 +1,48 @@
+# Using my solution
+An example query containing all possible fields:
+```graphql
+query Query {
+	management {
+		trades(filter: { baseSymbol: "MATIC" }, page: { number: 3, size: 25 }) {
+			totalCount
+			trades {
+				user {
+					username
+				}
+
+				base {
+					symbol
+				}
+				amount
+
+				quote {
+					symbol
+				}
+				price
+
+				fee {
+					currency {
+						symbol
+						name
+					}
+					amount
+				}
+
+				placedAt
+
+				labels {
+					key {
+						name
+					}
+					value
+				}
+			}
+		}
+	}
+}
+
+```
+
 # Project Setup
 
 ## Prerequisites
